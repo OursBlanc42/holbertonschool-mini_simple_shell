@@ -4,6 +4,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <time.h>
 
 
 /**
@@ -19,14 +20,32 @@ int main(void)
 	size_t buffer_size = 0;
 	ssize_t readed;
 	int i = 0;
-	
+	int random = 0;
 	pid_t child_pid;
 
+	char *emoji[] = {
+		"⊂(◉‿◉)つ ♥ ",
+		"┌( ಠ_ಠ)┘ ♥ ",
+		"ʕ•ᴥ•ʔ ♥ ",
+		"(✿◠‿◠) ♥ ",
+		"∩( ・ω・)∩ ♥ ",
+		"(｡*‿*｡) ♥ ",
+		"(⌐■_■) ♥ ",
+		"ლ(╹◡╹ლ) ♥ ",
+		"ᕦ(ò_óˇ)ᕤ ♥	",
+		"(づ｡◕‿‿◕｡)づ ♥	"
+	};
+
+	/* initialize seed for RNG */
+	srand(time(NULL));
 
 play_again: 
 
+	/* generate random number */
+	random = rand() % 10;
+
 	/* Waiting for input */
-	printf("(づ｡◕‿‿◕｡)づ ♥ ");
+	printf("%s",emoji[random]);
 
 	/* Read the input and check if succeed */
 	readed = getline(&string, &buffer_size, stdin);
@@ -78,3 +97,5 @@ play_again:
 			goto play_again;
 	}
 }
+
+
