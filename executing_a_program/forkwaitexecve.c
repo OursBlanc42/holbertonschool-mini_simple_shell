@@ -40,12 +40,14 @@ int main(void)
 			return (1);
 		}
 
-		if (child_pid[index] == 0) /* mean = we are in the "child process" */
+		/* mean = we are in the "child process" */
+		if (child_pid[index] == 0) 
 		{
 			current_pid = getpid();
 			printf("I am the child !\n");
 			printf("Current child pid = \t\t%d\n", current_pid);
-
+			
+			/* execute command */
 			if (execve(argv[0], argv, NULL) == -1)
 			{
 				printf("Error!!\n");
