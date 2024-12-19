@@ -30,7 +30,7 @@ int main(void)
 	{
 		string_concat = strcat(path_list->str, mysearch);
 		printf("%s", path_list->str);
-		
+
 		/* check if stat return value, that mean the thing exist */
 		if (stat(path_list->str, &buffer_stat) == 0)
 		{
