@@ -18,26 +18,26 @@
  * 4. Append the new node at the end of the list.
  *
  *@head: double pointer to a list_t list
- *@str: str to be added
+ *@string: str to be added
  *Return: the adress of new elements or NULL if it failed
  */
 
-list_t *add_node_end(list_t **head, const char *str)
+list_t *add_node_end(list_t **head, const char *string)
 {
 	/* Initialize buffer node and new node*/
 	list_t *temp_buffer = NULL;
 	list_t *new_node = malloc(sizeof(*new_node));
 
 	/* Check for special cases: invalid input or memory allocation failure */
-	if ((str == NULL) || (new_node == NULL))
+	if ((string == NULL) || (new_node == NULL))
 	{
 		free(new_node);
 		return (NULL);
 	}
 
 	/* Initialize new_node with duplicated string and apply new data */
-	new_node->str = strdup(str);
-	if (new_node->str == NULL)
+	new_node->string = strdup(string);
+	if (new_node->string == NULL)
 	{
 		free(new_node);
 		return (NULL);

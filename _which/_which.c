@@ -7,61 +7,70 @@
 #include "find.h"
 
 /**
- * _which - Rewrite of the `which` command
+ * main - Entry point - Rewrite of the `which` command
  * Description: This program searches for the location of an executable
  *				in the directories specified by the PATH environment variable.
- * 
+ *
  * Algorithm:
  * 1. Split the PATH environment variable into a list of directories.
- * 2. Loop through each directory:
- *    - Check if the command exists and is executable.
- * 3. Return the full path of the command if found; print an error otherwise.
- *
+ * 2. For each dir, concatenate the full path (ex : /usr/bin/ + / + neofetch)
+ * 3. For each full path, check with "stat" if the executable exist.
+ * 4. Return the full path of the command if found; print an error otherwise.
+ * @argc: The number of arguments passed to the program.
+ * @argv: An array of strings representing the arguments passed to the program.
  * Return: 0 if the command is found, 1 otherwise.
  */
-
 
 int main(int argc, char *argv[])
 {
 	/* declare & initialize variable */
-	char *name = "PATH"; /* name of var env */
-	char *mysearch = NULL;
-	char *separator = ":";			/* separator	*/
-	char *env_path = getenv(name);	/* get the env path */
-	list_t *path_list;				/* single linked list */
-	struct stat buffer_stat;	/* buffer to store stat result */
+	char *var_env_name = "PATH";
+	char *program_name = NULL;
+	char *separator = ":";
+	char *env_path = _getenv(var_env_name);
+	list_t *head_path_list;
+	list_t *path_list;
+	struct stat buffer_stat;
 	char *string_concat = NULL;
 
+	/* Check argc and catch value in argv */
 	if (argc != 2)
 	{
-		printf("Please enter one command name after which\n");
+		printf("Please enter one program name after which\n");
 		return (1);
 	}
 
-	mysearch = argv[1];
+	program_name = argv[1];
 
 	/* generate path list and stock in single linked list */
-	path_list = chopper(env_path, separator);
+	head_path_list = chopper(env_path, separator);
+	path_list = head_path_list;
 
-	/* Loop through the linked list */
+	/* Loop through the linked list and check if the programm exist */
 	while (path_list != NULL)
 	{
-		string_concat = strcat(path_list->str, "/");
-		string_concat = strcat(path_list->str, mysearch);
+		string_concat = concat_path(path_list->string, program_name);
 
-		/* check if stat return value, that mean the thing exist */
-		if (stat(path_list->str, &buffer_stat) == 0)
+		if (string_concat == NULL)
+		{
+			free_list(head_path_list);
+			return (1);
+		}
+
+		if (stat(string_concat, &buffer_stat) == 0)
 		{
 			printf("(⌐■_■) Yeah ! I find the command : %s\n", string_concat);
+			free_list(head_path_list);
 			return (0);
 		}
 
+		free(string_concat);	/* Always free string after use */
+		string_concat = NULL; /* Reset string_concat to avoid double free*/
 		path_list = path_list->next;
 	}
 
 	printf("(T_T) Nope ! I didnt find the command\n");
+	free_list(head_path_list);
 
-	return (0);
+	return (1);
 }
-
-

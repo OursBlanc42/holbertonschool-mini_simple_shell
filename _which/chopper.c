@@ -4,6 +4,15 @@
 #include <string.h>
 #include "which.h"
 
+/**
+ * chopper - Splits a string into a linked list of words
+ * Description: This function will split a string delimited by a separator
+ * into words, and storing each word as a node in a linked list.
+ * @string: Input string to be splitted
+ * @separator: The delimiter used to split the string into words.
+ * Return: A pointer to the head of the linked list containing the words.
+ */
+
 list_t *chopper(char *string, char *separator)
 {
 	/* declare & initialize variable */
@@ -20,4 +29,3 @@ list_t *chopper(char *string, char *separator)
 
 	return (head);
 }
-

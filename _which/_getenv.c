@@ -18,7 +18,7 @@ char *_getenv(const char *search)
 		sep_equal = strchr(*ptr_env, '=');
 
 		/**
-		* If the separator if find and  the name of variable correspond
+		* If the separator is find and  the name of variable correspond
 		* return the string after the separator
 		*/
 		if (sep_equal != NULL && strncmp(*ptr_env, search, strlen(search)) == 0)
@@ -28,3 +28,4 @@ char *_getenv(const char *search)
 	}
 	return (NULL);
 }
+
