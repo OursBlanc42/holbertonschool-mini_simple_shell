@@ -18,7 +18,9 @@
  * 4. Return the full path of the command if found; print an error otherwise.
  * @argc: The number of arguments passed to the program.
  * @argv: An array of strings representing the arguments passed to the program.
- * Return: 0 if the command is found, 1 otherwise.
+ * Return: 
+ * - 0: All commands were found successfully.
+ * - 1: An error occurred or at least one command was not found.
  */
 
 int main(int argc, char *argv[])
@@ -32,45 +34,59 @@ int main(int argc, char *argv[])
 	list_t *path_list;
 	struct stat buffer_stat;
 	char *string_concat = NULL;
+	int index;
+	int founded;
+	int fail = 0;
 
-	/* Check argc and catch value in argv */
-	if (argc != 2)
+	if (argc < 2)
 	{
-		printf("Please enter one program name after which\n");
+		printf("Usage: _which <program_name1> <program_name2> ...\n");
 		return (1);
 	}
 
-	program_name = argv[1];
-
 	/* generate path list and stock in single linked list */
 	head_path_list = chopper(env_path, separator);
-	path_list = head_path_list;
 
-	/* Loop through the linked list and check if the programm exist */
-	while (path_list != NULL)
-	{
-		string_concat = concat_path(path_list->string, program_name);
+	/* Loop through all provided program names */
+    for (index = 1; argv[index] != NULL; index++)
+    {
+		printf("Looking for argv[%d] = %s\n",index,argv[index]);
 
-		if (string_concat == NULL)
+		program_name = argv[index];
+		path_list = head_path_list; /* Reset path_list to the beginning */
+		founded = 0;
+
+		/* Loop through the linked list and check if the programm exist */
+		while (path_list != NULL)
 		{
-			free_list(head_path_list);
-			return (1);
+			string_concat = concat_path(path_list->string, program_name);
+
+			if (string_concat == NULL)
+			{
+				free_list(head_path_list);
+				return (1);
+			}
+
+			if (stat(string_concat, &buffer_stat) == 0)
+			{
+				printf("(⌐■_■) Yeah ! I find the command : %s\n", string_concat);
+				free(string_concat);
+				founded = 1;
+				break;
+			}
+
+			free(string_concat);	/* Always free string after use */
+			string_concat = NULL; /* Reset string_concat to avoid double free*/
+			path_list = path_list->next;
 		}
 
-		if (stat(string_concat, &buffer_stat) == 0)
+		if (founded == 0)
 		{
-			printf("(⌐■_■) Yeah ! I find the command : %s\n", string_concat);
-			free_list(head_path_list);
-			return (0);
+			fail = 1;
+			printf("(T_T) Nope ! I didnt find the command %s\n",argv[index]);
 		}
-
-		free(string_concat);	/* Always free string after use */
-		string_concat = NULL; /* Reset string_concat to avoid double free*/
-		path_list = path_list->next;
 	}
 
-	printf("(T_T) Nope ! I didnt find the command\n");
 	free_list(head_path_list);
-
-	return (1);
+	return (fail);
 }
